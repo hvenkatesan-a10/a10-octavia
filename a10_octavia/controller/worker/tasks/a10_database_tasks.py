@@ -471,6 +471,7 @@ class GetVRIDForLoadbalancerResource(BaseDatabaseTask):
                         owner,
                         str(e))
                     raise e
+        LOG.info("***vrid list from GetVRIDForLoadbalancerResource task*** %s", vrid_list)
         return vrid_list
 
 

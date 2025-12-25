@@ -1147,6 +1147,7 @@ class HandleVRIDFloatingIP(BaseNetworkTask):
             return updated_vrid_list
         vrid_value = CONF.a10_global.vrid
         prev_vrid_value = vrid_list[0].vrid if vrid_list else None
+        LOG.info("***previous vrid list*** %s", prev_vrid_value)
         updated_vrid_list = copy.copy(vrid_list)
         if use_device_flavor:
             if vthunder_config.vrid_floating_ip:
