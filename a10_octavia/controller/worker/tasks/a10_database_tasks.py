@@ -464,6 +464,7 @@ class GetVRIDForLoadbalancerResource(BaseDatabaseTask):
                         vrid_list = self.vrid_repo.get_vrid_from_owner(
                             session, owner=owner,
                             project_ids=partition_project_list)
+                    LOG.info("***vrid list from GetVRIDForLoadbalancerResource task*** %s", vrid_list)
                     return vrid_list
                 except Exception as e:
                     LOG.exception(
