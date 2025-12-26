@@ -1391,30 +1391,27 @@ class UpdateAcosVersionInVthunderEntry(VThunderBaseTask):
 
     @axapi_client_decorator
     def execute(self, vthunder, loadbalancer=None):
-        existing_vthunder = None
-        if loadbalancer is not None:
-            existing_vthunder = self.vthunder_repo.get_vthunder_by_project_id(
-                db_apis.get_session(),
-                loadbalancer[constants.PROJECT_ID])
-        if not existing_vthunder:
-            try:
-                acos_version_summary = self.axapi_client.system.action.get_acos_version()
-                acos_version = acos_version_summary['version']['oper']['sw-version'].split(',')[0]
-                LOG.info("***vthunder in UpdateAcosVersionInVthunderEntry %s and %s", vthunder, acos_version)
-                self.vthunder_repo.update(db_apis.get_session(),
-                                          vthunder.id,
-                                          acos_version=acos_version)
-                LOG.info("***vthunder in UpdateAcosVersionInVthunderEntry %s and %s", vthunder, acos_version)
-            except Exception as e:
-                LOG.exception('Failed to set acos_version in vthunders table '
-                              ': {}'.format(str(e)))
-        else:
-            LOG.info("***vthunder in UpdateAcosVersionInVthunderEntry %s and %s", existing_vthunder, existing_vthunder.acos_version)
-            self.vthunder_repo.update(
-                db_apis.get_session(),
-                vthunder.id,
-                acos_version=existing_vthunder.acos_version)
-            LOG.info("***vthunder in UpdateAcosVersionInVthunderEntry %s and %s", existing_vthunder, existing_vthunder.acos_version)
+        with db_apis.session().begin() as session:
+            existing_vthunder = None
+            if loadbalancer is not None:
+                existing_vthunder = self.vthunder_repo.get_vthunder_by_project_id(
+                    session,
+                    loadbalancer[constants.PROJECT_ID])
+            if not existing_vthunder:
+                try:
+                    acos_version_summary = self.axapi_client.system.action.get_acos_version()
+                    acos_version = acos_version_summary['version']['oper']['sw-version'].split(',')[0]
+                    self.vthunder_repo.update(session,
+                                            vthunder.id,
+                                            acos_version=acos_version)
+                except Exception as e:
+                    LOG.exception('Failed to set acos_version in vthunders table '
+                                ': {}'.format(str(e)))
+            else:
+                self.vthunder_repo.update(
+                    session,
+                    vthunder.id,
+                    acos_version=existing_vthunder.acos_version)
 
 
 class AmphoraePostNetworkUnplug(VThunderBaseTask):
