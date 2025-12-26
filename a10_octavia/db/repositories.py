@@ -568,6 +568,7 @@ class VRIDRepository(BaseRepository):
             or_(self.model_class.owner.in_(owner),
                 self.model_class.owner.in_(project_ids)))
         for data in model:
+            LOG.info("***data from get_vrid_from_owner %s", data.to_data_model())
             vrid_obj_list.append(data.to_data_model())
 
         return vrid_obj_list

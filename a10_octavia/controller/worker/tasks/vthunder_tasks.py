@@ -1400,17 +1400,21 @@ class UpdateAcosVersionInVthunderEntry(VThunderBaseTask):
             try:
                 acos_version_summary = self.axapi_client.system.action.get_acos_version()
                 acos_version = acos_version_summary['version']['oper']['sw-version'].split(',')[0]
+                LOG.info("***vthunder in UpdateAcosVersionInVthunderEntry %s and %s", vthunder, acos_version)
                 self.vthunder_repo.update(db_apis.get_session(),
                                           vthunder.id,
                                           acos_version=acos_version)
+                LOG.info("***vthunder in UpdateAcosVersionInVthunderEntry %s and %s", vthunder, acos_version)
             except Exception as e:
                 LOG.exception('Failed to set acos_version in vthunders table '
                               ': {}'.format(str(e)))
         else:
+            LOG.info("***vthunder in UpdateAcosVersionInVthunderEntry %s and %s", existing_vthunder, existing_vthunder.acos_version)
             self.vthunder_repo.update(
                 db_apis.get_session(),
                 vthunder.id,
                 acos_version=existing_vthunder.acos_version)
+            LOG.info("***vthunder in UpdateAcosVersionInVthunderEntry %s and %s", existing_vthunder, existing_vthunder.acos_version)
 
 
 class AmphoraePostNetworkUnplug(VThunderBaseTask):
@@ -1475,6 +1479,7 @@ class VCSSyncWait(VThunderBaseTask):
         if not (master_amphora_status and backup_amphora_status):
             return
 
+        LOG.info("***vthunder in VCSSyncWait %s***", vthunder)
         attempts = CONF.a10_controller_worker.amp_vcs_retries
         while attempts >= 0:
             try:
