@@ -1392,6 +1392,7 @@ class UpdateAcosVersionInVthunderEntry(VThunderBaseTask):
     @axapi_client_decorator
     def execute(self, vthunder, loadbalancer=None):
         with db_apis.session().begin() as session:
+            LOG.info("vthunder in UpdateAcosVersionInVthunderEntry %s", vthunder.ip_address)
             existing_vthunder = None
             if loadbalancer is not None:
                 existing_vthunder = self.vthunder_repo.get_vthunder_by_project_id(

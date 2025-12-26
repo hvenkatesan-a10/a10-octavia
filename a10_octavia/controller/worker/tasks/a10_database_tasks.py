@@ -268,6 +268,7 @@ class GetBackupVThunderByLoadBalancer(BaseDatabaseTask):
                 else:
                     backup_vthunder.password = a10_task_utils.get_password(barbican_client, loadbalancer.get(constants.PROJECT_ID))
                 backup_vthunder.password = a10_task_utils.decode_base64(backup_vthunder.password)
+            LOG.info("backup_vthunder in GetBackupVThunderByLoadBalancer %s", backup_vthunder.ip_address)
             return backup_vthunder
         LOG.info("Successfully fetched vThunder details for LB")
 
